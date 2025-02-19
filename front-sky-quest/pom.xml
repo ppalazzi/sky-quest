@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>skyquest</artifactId>
+        <groupId>com.palazzisoft</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>frontend-skyquest</artifactId>
+    <name>Frontend SkyQuest</name>
+    <description>Web application for render Integral databases data</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.11.3</version>
+                <executions>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+
+                    <execution>
+                        <id>npm run dev</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>Static styles checkins</id>
+                        <goals>
+                            <goal>npx</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>stylelint src/**/*.{css,scss} --config /.stylelintrc.json</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Latest LTS -->
+                    <nodeVersion>v18.19.0</nodeVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
