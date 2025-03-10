@@ -1,7 +1,8 @@
 import React from 'react';
 import { Dashboard } from '@/modules/dashboard/Dashboard';
 
-const  DashboardPage = () => {
+const  DashboardPage = async () => {
+
     return (
 				<Dashboard />
     );
