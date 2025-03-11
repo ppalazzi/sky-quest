@@ -1,11 +1,12 @@
-import { catalogService } from '@/app/service/catalogService';
+import { catalogService } from '@/service/catalogService';
+import MessierList from '@modules/dashboard/messier/MessierList';
 
-export async function MessierList() {
+export default async function MessierPage() {
 
-	const messierCatalog = catalogService();
+	const messierCatalog = await catalogService();
 
 	return (
-		<div>Catalog Messier</div>
+		<MessierList objects={messierCatalog} />
 	)
 
 }
