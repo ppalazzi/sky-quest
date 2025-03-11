@@ -7,7 +7,7 @@ export const TopBar = () => {
 			<span className="text-2xl">Sky Quest</span>
 
 			<nav className="flex items-center space-x-4 lg:space-x-6">
-				<Link className="text-sm font-medium transition-colors hover:text-primary" href="/">Messier</Link>
+				<Link className="text-sm font-medium transition-colors hover:text-primary" href="/dashboard/messier">Messier</Link>
 				<Link className="text-sm font-medium transition-colors hover:text-primary" href="/">Ngc</Link>
 			</nav>
 

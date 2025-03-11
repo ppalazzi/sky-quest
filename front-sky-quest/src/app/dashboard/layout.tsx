@@ -2,11 +2,11 @@ import { TopBar } from '@/components/menubar/TopBar';
 
 export default function DashboardLayout({children}: { children: React.ReactNode }) {
 	return (
-		<main className="flex flex-col w-full h-screen">
+		<div>
 			<TopBar />
-			<section>
+			<div className="flex justify-center">
 				{children}
-			</section>
-		</main>
+			</div>
+		</div>
 	)
 }
