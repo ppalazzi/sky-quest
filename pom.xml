@@ -19,6 +19,7 @@
     <modules>
         <module>front-sky-quest</module>
         <module>back-sky-quest</module>
+        <module>service-discovery</module>
     </modules>
 
 	<properties>
