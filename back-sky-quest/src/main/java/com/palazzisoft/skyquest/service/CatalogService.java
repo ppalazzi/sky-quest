@@ -20,7 +20,7 @@ public class CatalogService {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, MessierObject> result;
         try {
-            Messier messier = mapper.readValue(new ClassPathResource("/static/messier.json").getFile(), Messier.class);
+            Messier messier = mapper.readValue(new ClassPathResource("/data/messier.json").getFile(), Messier.class);
             result = messier.data();
         } catch (IOException e) {
             log.error("Error retrieving catalog for Messier objects");
