@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  backend:
+    image: ppalazzi/skyquest-backend:local
+    build:
+      context: ./back-sky-quest
+    ports:
+      - "8080:8080"
+    container_name: skyquest-backend
+    networks:
+      - app-network
+
+  frontend-dev:
+    image: ppalazzi/skyquest-frontend:local
+    build:
+      context: ./front-sky-quest
+      target: dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./front-sky-quest/.env.dev
+    depends_on:
+      - backend
+    container_name: skyquest-frontend
+    networks:
+      - app-network
+    command: npm run dev
+
+networks:
+  app-network:
+    driver: bridge
