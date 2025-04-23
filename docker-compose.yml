@@ -27,6 +27,15 @@ services:
       - app-network
     command: npm run dev
 
+  postgres:
+    image: postgres:16
+    container_name: skyquest-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: marigold
+      POSTGRES_PASSWORD: rasputin01
+
 networks:
   app-network:
     driver: bridge

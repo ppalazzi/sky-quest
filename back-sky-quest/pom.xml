@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.2</version>
+        <version>3.4.4</version>
         <relativePath/>
     </parent>
 
@@ -17,21 +17,9 @@
 
     <properties>
         <java.version>21</java.version>
-        <spring-cloud.version>2024.0.0</spring-cloud.version>
+        <model-mapper.version>3.0.0</model-mapper.version>
+        <jjtw.version>0.11.5</jjtw.version>
     </properties>
-
-    <dependencyManagement>
-        <!-- spring cloud dependencies -->
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -46,11 +34,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -71,17 +54,28 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- Spring cloud -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.thoughtworks.xstream</groupId>
-                    <artifactId>xstream</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${model-mapper.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjtw.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjtw.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjtw.version}</version>
         </dependency>
 
         <dependency>
