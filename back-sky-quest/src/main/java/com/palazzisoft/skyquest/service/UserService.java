@@ -29,7 +29,7 @@ public class UserService {
     private final UserDetailsService userDetailsService;
 
     public UserDTO findUserByEmail(UserDTO userDTO) {
-        log.debug("Finding user by email {}", userDTO.email());
+        log.debug("Finding user by email {}", userDTO.username());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDTO.username(), userDTO.password())
         );
