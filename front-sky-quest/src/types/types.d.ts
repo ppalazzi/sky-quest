@@ -1,3 +1,13 @@
+interface User {
+	id: number;
+	username: string;
+	password: string;
+	email: string;
+	phone: string;
+	token: string;
+}
+
+
 interface Messier {
 	info: Info;
 	data: Record<string, MessierObject>;

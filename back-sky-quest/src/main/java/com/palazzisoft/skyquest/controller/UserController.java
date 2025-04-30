@@ -4,11 +4,15 @@ import com.palazzisoft.skyquest.model.UserDTO;
 import com.palazzisoft.skyquest.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Duration;
 
 @AllArgsConstructor
 @RestController
@@ -20,7 +24,19 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO userDTO) {
-        log.info("Login user with email {} ", userDTO.email());
-        return ResponseEntity.ok(userService.findUserByEmail(userDTO));
+        log.info("Login user with username {} ", userDTO.username());
+        UserDTO userLogged = userService.findUserByUsername(userDTO);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE,createCookie(userLogged.token()).toString())
+                .body(userLogged);
+    }
+
+    private ResponseCookie createCookie(String token) {
+        return ResponseCookie.from("jwt", token)
+                .httpOnly(true)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(Duration.ofHours(1))
+                .build();
     }
 }
