@@ -6,15 +6,10 @@ import com.palazzisoft.skyquest.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -28,7 +23,7 @@ public class UserService {
     private final AuthenticationService authenticationService;
     private final UserDetailsService userDetailsService;
 
-    public UserDTO findUserByEmail(UserDTO userDTO) {
+    public UserDTO findUserByUsername(UserDTO userDTO) {
         log.debug("Finding user by email {}", userDTO.username());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDTO.username(), userDTO.password())

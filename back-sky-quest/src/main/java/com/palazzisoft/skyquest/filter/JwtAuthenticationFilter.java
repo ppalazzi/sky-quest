@@ -1,9 +1,9 @@
 package com.palazzisoft.skyquest.filter;
 
 import com.palazzisoft.skyquest.service.AuthenticationService;
-import com.palazzisoft.skyquest.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -25,21 +26,21 @@ import static java.util.Objects.nonNull;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String BEARER_TOKEN_PREFIX = "Bearer ";
+    private static final String BEARER_TOKEN_PREFIX = "jwt";
     private final AuthenticationService authenticationService;
     private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
+        Optional<Cookie> cookies = returnJWTCookie(request.getCookies());
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (cookies.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String token = authHeader.substring(BEARER_TOKEN_PREFIX.length());
+        final String token = cookies.get().getValue();
         final String userName = authenticationService.getUsernameFromJwtToken(token);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -57,4 +58,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    private Optional<Cookie> returnJWTCookie(Cookie[] cookies) {
+        Optional<Cookie> optional = Optional.empty();
+        if (nonNull(cookies)) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(JwtAuthenticationFilter.BEARER_TOKEN_PREFIX)) {
+                    return Optional.of(cookie);
+                }
+            }
+        }
+        return optional;
+    }
 }
+
