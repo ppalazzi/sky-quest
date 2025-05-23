@@ -1,40 +1,41 @@
 'use client'
 
-import { useState } from 'react';
+import { useActionState } from 'react';
 
-import http from '@/service/apiClient';
-import { useRouter } from 'next/navigation';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { loginAction } from '@/action/login/login-action';
+
+export type LoginState = {
+	data?: User,
+	error?: string,
+};
 
 export const Login = () => {
-	const router = useRouter();
 
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
-
-	const handlerLogin = async () => {
-
-		try {
-			await http.post('/api/login', {
-				username,
-				password
-			});
-
-			router.push('/dashboard/messier');
-		}
-		catch (error) {
-			console.error(error);
-		}
-	}
+	const loginState: LoginState = {};
+	const [state, action] = useActionState(loginAction, loginState);
 
 	return (
-		<section className="flex flex-col gap-4">
-			<article className="flex flex-col gap-4">
-				<label>Username</label>
-				<input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-				<label>Password</label>
-				<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-			</article>
-			<button onClick={() => handlerLogin()}>Login</button>
+		<section className="flex flex-col gap-6">
+			<form action={action} className="flex flex-col gap-4">
+				<div className="flex flex-col gap-2 ">
+					<label className="text-sm font-medium">Username</label>
+					<Input name="username" maxLength={50}/>
+
+					<label className="text-sm font-medium">Password</label>
+					<Input name="password" type="password" maxLength={30}/>
+
+					{state?.error &&
+						<div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+						     role="alert">
+							{state.error}.
+						</div>
+					}
+
+				</div>
+				<Button className="w-full" type={'submit'}>Login</Button>
+			</form>
 		</section>
 	);
 }
