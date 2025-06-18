@@ -9,9 +9,9 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
 				<TopBar />
 			</header>
 
-			<div>
+			<aside className="flex flex-1">
 				<Sidebar />
-			</div>
+			</aside>
 
 			<div className="flex justify-center">
 				{children}
