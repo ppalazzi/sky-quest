@@ -1,10 +1,12 @@
 'use client'
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { loginAction } from '@/action/login/login-action';
+import { useAuth } from '@/store/useAuth';
+import { useRouter } from 'next/navigation';
 
 export type LoginState = {
 	data?: User,
@@ -13,8 +15,18 @@ export type LoginState = {
 
 export const Login = () => {
 
-	const loginState: LoginState = {};
+	const loginState: LoginState = { };
+	const { login } = useAuth();
+	const router = useRouter();
+
 	const [state, action] = useActionState(loginAction, loginState);
+
+	useEffect(() => {
+		if (state?.data) {
+			login(state.data);
+			router.push('/dashboard/messier')
+		}
+	}, [state?.data]);
 
 	return (
 		<section className="flex flex-col gap-6">

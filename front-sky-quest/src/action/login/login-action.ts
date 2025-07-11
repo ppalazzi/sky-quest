@@ -2,9 +2,10 @@ import { LoginState } from '@modules/login/LoginPage';
 import { loginSchema } from '@/schema/validatorSchema';
 import http from '@/service/apiClient';
 import { UserResponse } from '@/app/api/login/route';
-import { redirect } from 'next/navigation';
 
-export const loginAction = async (state: LoginState, formData: FormData): Promise<LoginState> => {
+export const loginAction = async (_state: LoginState, formData: FormData): Promise<LoginState> => {
+	const newState:LoginState = {};
+
 	const userCredentials = {
 		username: formData.get('username') as string,
 		password: formData.get('password') as string,
@@ -13,8 +14,8 @@ export const loginAction = async (state: LoginState, formData: FormData): Promis
 	// validate fields
 	const validationFields = loginSchema.safeParse(userCredentials);
   if (!validationFields.success) {
-	  state.error = validationFields.error.issues[0]?.message || "An error occurred.";
-		return state;
+	  newState.error = validationFields.error.issues[0]?.message || "An error occurred.";
+		return newState;
   }
 
 	// if no error then retrieve from backend
@@ -24,11 +25,11 @@ export const loginAction = async (state: LoginState, formData: FormData): Promis
 	});
 
   if (response.data.status === 200) {
-	  redirect('/dashboard/messier')
+	  newState.data = response.data.user || undefined;
   }
 	else {
-		state.error = response.data.message;
+	  newState.error = response.data.message;
   }
 
-	return state;
+	return newState;
 }
