@@ -2,10 +2,7 @@ import React from 'react';
 import { Dashboard } from '@/modules/dashboard/Dashboard';
 
 const DashboardPage = async () => {
-
-    return (
-				<Dashboard />
-    );
-}
+  return <Dashboard />;
+};
 
 export default DashboardPage;

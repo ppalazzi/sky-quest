@@ -1,0 +1,24 @@
+# Node modules
+node_modules
+
+# Build outputs
+.next
+out
+dist
+
+# Config y lockfiles
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Archivos de configuración que no querés formatear
+.eslintrc*
+.prettierrc*
+eslint.config.mjs
+tailwind.config.js
+postcss.config.js
+tsconfig.json
+
+# Varios
+coverage
+public
