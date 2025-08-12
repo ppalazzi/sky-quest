@@ -1,11 +1,28 @@
 'use client';
 
 import { UserRound } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ModalProfile } from '@/components/profile/ModalProfile';
+import { useAuth } from '@/store/useAuth';
 
 export const Profile = () => {
+  const { user } = useAuth();
+
   const [openModal, setOpenModal] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openModal]);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      setOpenModal(false);
+    }
+  };
 
   return (
     <section className="flex flex-col justify-center items-center">
@@ -16,7 +33,11 @@ export const Profile = () => {
           onClick={() => setOpenModal((openModal) => !openModal)}
         />
       </div>
-      <ModalProfile openModal={openModal} />
+      {openModal && (
+        <div ref={modalRef}>
+          <ModalProfile isAuth={user !== null} />
+        </div>
+      )}
     </section>
   );
 };
