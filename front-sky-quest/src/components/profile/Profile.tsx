@@ -3,11 +3,8 @@
 import { UserRound } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { ModalProfile } from '@/components/profile/ModalProfile';
-import { useAuth } from '@/store/useAuth';
 
 export const Profile = () => {
-  const { user } = useAuth();
-
   const [openModal, setOpenModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +32,7 @@ export const Profile = () => {
       </div>
       {openModal && (
         <div ref={modalRef}>
-          <ModalProfile isAuth={user !== null} />
+          <ModalProfile />
         </div>
       )}
     </section>
