@@ -27,8 +27,25 @@ public class UserController {
         log.info("Login user with username {} ", userDTO.username());
         UserDTO userLogged = userService.findUserByUsername(userDTO);
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE,createCookie(userLogged.token()).toString())
+                .header(HttpHeaders.SET_COOKIE, createCookie(userLogged.token()).toString())
                 .body(userLogged);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logoutUser() {
+        log.info("Logging out user");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteCookie().toString())
+                .build();
+    }
+
+    private ResponseCookie deleteCookie() {
+        return ResponseCookie.from("jwt", null)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
     }
 
     private ResponseCookie createCookie(String token) {
