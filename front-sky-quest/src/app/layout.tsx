@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: 'Keep track of your personal observations of the sky.',
 };
 
+import AuthHydrator from './AuthHydrator';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -13,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>{children}</body>
+      <body className={`antialiased`}>
+        <AuthHydrator />
+        {children}
+      </body>
     </html>
   );
 }

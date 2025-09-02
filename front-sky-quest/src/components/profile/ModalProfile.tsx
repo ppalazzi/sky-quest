@@ -53,7 +53,7 @@ export const ModalProfile = () => {
           <Link
             className="flex justify-start items-center border-2 border-transparent hover:border-2
 				 hover:bg-sidebar-accent	rounded-md transition-colors w-full  text-sm gap-2 cursor-pointer"
-            href="/"
+            href="/login"
           >
             <UserRound size={14} />
             <span className="text-sm">Profile</span>
