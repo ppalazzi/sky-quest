@@ -11,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -32,6 +34,24 @@ public class UserService {
         User details = (User) userDetailsService.loadUserByUsername(userDTO.username());
         String token = authenticationService.generateToken(details);
 
+        return buildUserDTO(token, details);
+    }
+
+    public UserDTO findUserByToken(String token) {
+        String username  = authenticationService.getUsernameFromJwtToken(token);
+        if (Objects.nonNull(username)) {
+            User user = (User) userDetailsService.loadUserByUsername(username);
+            return buildUserDTO(token, user);
+        }
+        return null;
+    }
+
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = mapper.map(userDTO, User.class);
+        return mapper.map(userRepository.save(user), UserDTO.class);
+    }
+
+    private static UserDTO buildUserDTO(String token, User details) {
         return UserDTO.builder()
                 .token(token)
                 .id(details.getId())
@@ -40,10 +60,5 @@ public class UserService {
                 .phone(details.getPhone())
                 .id(details.getId())
                 .build();
-    }
-
-    public UserDTO createUser(UserDTO userDTO) {
-        User user = mapper.map(userDTO, User.class);
-        return mapper.map(userRepository.save(user), UserDTO.class);
     }
 }

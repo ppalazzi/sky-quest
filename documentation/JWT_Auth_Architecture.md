@@ -106,23 +106,61 @@ This enables SSR and avoids exposing tokens to the client.
 
 ---
 
+## ♻️ Session Hydration on Refresh (Implemented)
+
+A common issue with client-side state (e.g., Zustand) is losing user info after a page refresh. This project addresses it with a backend endpoint and a lightweight hydration hook.
+
+### Backend: `GET /user/me`
+- Path: `/user/me` in `UserController`.
+- Reads the `jwt` cookie from the incoming request.
+- Delegates to `UserService.findUserByToken(token)` to resolve the current user.
+- Returns `200 OK` with the `UserDTO` if valid; otherwise `401 Unauthorized`.
+
+### Frontend: `/api/me` route and Auth hydrator
+- Next.js route handler: `/app/api/me/route.ts` proxies to Spring `/user/me`.
+  - Reads/forwards the `jwt` cookie server-side via the existing Axios interceptor in `service/api.ts`.
+  - Returns 200 with `user` on success, or proper status codes (401 on unauthorized).
+- Zustand store: `src/store/useAuth.ts`
+  - Adds `init()` that calls `/api/me` to restore `user` and `isAuthenticated`.
+  - Tracks `isHydrated` and `isHydrating` to avoid duplicate calls and flickers.
+- Client hydrator: `src/app/AuthHydrator.tsx`
+  - Calls `useAuth().init()` once on app mount.
+  - Included in `src/app/layout.tsx` so it runs globally.
+
+### Logout
+- `POST /user/logout` clears the `jwt` cookie (backend).
+- Frontend `/api/logout` mirrors cookie deletion back to browser, then redirects to `/login`.
+- Zustand `logout()` clears in-memory state.
+
+### Request flow (after refresh)
+1. Browser loads a page; `AuthHydrator` triggers `useAuth.init()`.
+2. `init()` calls Next.js `/api/me`.
+3. `/api/me` forwards the `jwt` cookie to Spring `/user/me`.
+4. If valid, Spring returns the user; Zustand sets `user` and `isAuthenticated=true`.
+5. If invalid/expired, Zustand sets `user=null` and `isAuthenticated=false`.
+
+---
+
 ## 🚀 Future Improvements
 
 - Add refresh token flow for long-lived sessions.
 - Add automatic logout on token expiry (middleware + 401 handling).
 - Add role-based access control (RBAC) at route level.
-- Add `/api/me` endpoint to verify and return the current user session.
 
 ---
 
 ## 📁 Related Files
 
-| File                      | Purpose                                     |
-|---------------------------|---------------------------------------------|
-| `/app/api/login/route.ts` | Handles login and forwards `Set-Cookie`     |
-| `/app/api/dashboard/...`  | Protected routes that use `apiServer`       |
-| `/service/apiClient.ts`   | Axios for client-side components            |
-| `/service/apiServer.ts`   | Axios for server-side routes or components  |
+| File                         | Purpose                                        |
+|------------------------------|------------------------------------------------|
+| `/app/api/login/route.ts`    | Handles login and forwards `Set-Cookie`        |
+| `/app/api/logout/route.ts`   | Logs out and clears cookie                     |
+| `/app/api/me/route.ts`       | Returns current user based on cookie           |
+| `/app/AuthHydrator.tsx`      | Triggers Zustand hydration on app mount        |
+| `/app/layout.tsx`            | Includes the hydrator                          |
+| `/store/useAuth.ts`          | Zustand store with `init` + hydration flags    |
+| `/service/apiClient.ts`      | Axios for client-side components               |
+| `/service/api.ts`            | Axios for server-side routes or components     |
 
 ---
 
