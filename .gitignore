@@ -8,6 +8,8 @@ node_modules
 mpde
 target
 
+### internal ignores
 .next
+.sdkmanrc
 
 
