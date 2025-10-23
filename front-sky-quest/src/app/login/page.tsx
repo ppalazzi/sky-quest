@@ -15,7 +15,7 @@ export default async function LoginPage() {
         <Login />
 
         <p className="text-sm text-center text-muted-foreground">
-          <Link className="hover:text-brand underline" href="/">
+          <Link className="hover:text-brand underline" href="/register">
             Don&apos;t have an account? Register
           </Link>
         </p>

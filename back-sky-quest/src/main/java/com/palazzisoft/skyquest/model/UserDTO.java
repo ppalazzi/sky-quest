@@ -1,14 +1,20 @@
 package com.palazzisoft.skyquest.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
 @Builder
-public record UserDTO(
-        Long id,
-        String username,
-        String password,
-        String email,
-        String phone,
-        String token
-) {
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserDTO {
+    private Long id;
+    private String username;
+    private String password;
+    private String email;
+    private String phone;
+    private String token;
+
 }

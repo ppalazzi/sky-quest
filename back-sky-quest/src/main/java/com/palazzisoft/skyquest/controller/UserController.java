@@ -25,10 +25,10 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO userDTO) {
-        log.info("Login user with username {} ", userDTO.username());
+        log.info("Login user with username {} ", userDTO.getUsername());
         UserDTO userLogged = userService.findUserByUsername(userDTO);
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, createCookie(userLogged.token()).toString())
+                .header(HttpHeaders.SET_COOKIE, createCookie(userLogged.getToken()).toString())
                 .body(userLogged);
     }
 
@@ -51,6 +51,12 @@ public class UserController {
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        log.info("Creating user with username {} ", userDTO.getUsername());
+        return ResponseEntity.ok(userService.createUser(userDTO));
     }
 
     private ResponseCookie deleteCookie() {

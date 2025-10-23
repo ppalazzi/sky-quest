@@ -2,12 +2,6 @@ import { NextResponse } from 'next/server';
 import api from '@/service/api';
 import { AxiosError } from 'axios';
 
-export type UserResponse = {
-  user: User | null;
-  status: number;
-  message?: string;
-};
-
 export async function POST(request: Request): Promise<NextResponse<UserResponse>> {
   try {
     const { username, password } = await request.json();
@@ -22,7 +16,7 @@ export async function POST(request: Request): Promise<NextResponse<UserResponse>
     const res: NextResponse<UserResponse> = NextResponse.json({
       user: response.data,
       status: response.status,
-      message: 'Login Succesful',
+      message: 'Login Successful',
     });
 
     if (setCookie) {
