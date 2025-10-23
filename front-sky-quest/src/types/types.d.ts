@@ -1,3 +1,9 @@
+type UserResponse = {
+  user: User | null;
+  status: number;
+  message?: string;
+};
+
 interface User {
   id: number;
   username: string;
