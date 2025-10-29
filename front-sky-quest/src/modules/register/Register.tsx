@@ -17,8 +17,10 @@ export const Register = () => {
   const [state, action] = useActionState(registerAction, registerState);
 
   return (
-    <section className="container flex flex-col h-screen w-screen justify-center items-center
-    mx-auto gap-6">
+    <section
+      className="container flex flex-col h-screen w-screen justify-center items-center
+    mx-auto gap-6"
+    >
       <Link className="absolute left-4 top-4 md:left-8 md:top-8" href="/">
         <span className="font-bold">SkyQuest</span>
       </Link>
@@ -40,7 +42,7 @@ export const Register = () => {
           <Input name="email" type="email" maxLength={255} />
 
           <label className="text-sm font-medium">Password</label>
-          <Input name="password" type={"password"} maxLength={30} />
+          <Input name="password" type={'password'} maxLength={30} />
         </div>
 
         {state?.error && (
@@ -52,11 +54,15 @@ export const Register = () => {
           </div>
         )}
 
-        <Button className="w-full" type="submit">Create Account</Button>
+        <Button className="w-full" type="submit">
+          Create Account
+        </Button>
       </form>
 
       <p className="text-sm text-muted-foreground">
-        <Link className="hover:text-brand underline" href="/login">Already have an account? Sign in</Link>
+        <Link className="hover:text-brand underline" href="/login">
+          Already have an account? Sign in
+        </Link>
       </p>
     </section>
   );
