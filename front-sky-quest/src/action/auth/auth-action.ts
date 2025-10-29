@@ -43,7 +43,10 @@ export const logoutAction = async () => {
   redirect('/login');
 };
 
-export const registerAction = async (state: RegisterState, formData: FormData): Promise<LoginState> => {
+export const registerAction = async (
+  state: RegisterState,
+  formData: FormData,
+): Promise<LoginState> => {
   const newState: RegisterState = {};
 
   const userCredentials = {
