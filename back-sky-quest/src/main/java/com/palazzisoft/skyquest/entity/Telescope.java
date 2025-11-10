@@ -9,8 +9,7 @@ import lombok.Data;
 public class Telescope {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "telescope_seq", sequenceName = "telescope_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

@@ -32,6 +32,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(antMatcher("/user/**")).permitAll()
                         .requestMatchers(antMatcher("/actuator/**")).permitAll()
+                        .requestMatchers(antMatcher("/v3/api-docs/**")).permitAll()
+                        .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
+                        .requestMatchers(antMatcher("/swagger-ui.html")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
