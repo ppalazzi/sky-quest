@@ -9,8 +9,7 @@ import lombok.Data;
 public class Filter {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "filter_seq", sequenceName = "filter_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

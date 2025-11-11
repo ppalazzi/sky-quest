@@ -72,13 +72,9 @@ public class TelescopeController {
     @PostMapping
     public ResponseEntity<Telescope> createTelescope(@RequestBody Telescope telescope) {
         log.info("Creating telescope: {} {}", telescope.getBrand(), telescope.getModel());
-        try {
-            Telescope savedTelescope = telescopeService.save(telescope);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedTelescope);
-        } catch (IllegalArgumentException e) {
-            log.error("Error creating telescope: {}", e.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
+
+        Telescope savedTelescope = telescopeService.save(telescope);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedTelescope);
     }
 
     @PutMapping("/{id}")

@@ -9,8 +9,7 @@ import lombok.Data;
 public class Camera {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "camera_seq", sequenceName = "camera_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

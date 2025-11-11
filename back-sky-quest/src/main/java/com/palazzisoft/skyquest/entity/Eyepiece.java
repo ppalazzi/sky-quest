@@ -9,8 +9,7 @@ import lombok.Data;
 public class Eyepiece {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "eyepiece_seq", sequenceName = "eyepiece_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
