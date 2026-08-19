@@ -45,7 +45,7 @@ docker compose up --build   # postgres :5432, backend :8080, frontend :3000
 JWT stored in an **HTTP-only cookie named `jwt`**. Full details in `documentation/JWT_Auth_Architecture.md`. The flow spans both modules:
 
 1. Login: browser → Next.js `/api/login` route handler → Spring `POST /user`. Spring validates credentials, generates the JWT (`AuthenticationService`), and returns it via a `Set-Cookie` header. The Next.js route **manually forwards that `Set-Cookie`** back to the browser.
-2. Authenticated requests: Spring's `JwtAuthenticationFilter` reads the `jwt` cookie (not an `Authorization` header) and populates the `SecurityContext`. In `SecurityConfig`, `/user/**` and `/actuator/**` are public; everything else requires auth.
+2. Authenticated requests: Spring's `JwtAuthenticationFilter` reads the `jwt` cookie (not an `Authorization` header) and populates the `SecurityContext`. In `SecurityConfig`, `/user/**`, `/actuator/**`, and the Swagger paths (`/v3/api-docs/**`, `/swagger-ui/**`, `/swagger-ui.html`) are public; everything else requires auth.
 3. Session hydration on refresh: `AuthHydrator` (mounted in `layout.tsx`) calls `useAuth().init()` → Next.js `/api/me` → Spring `GET /user/me`, restoring the Zustand store. Guarded by `isHydrated`/`isHydrating` flags in `src/store/useAuth.ts`.
 
 Because Next.js middleware cannot inject cookies into outgoing requests, cookie forwarding is done manually in route handlers / the `api.ts` interceptor.
@@ -67,15 +67,18 @@ Standard layered Spring Boot: `controller` → `service` → `repository`/`entit
 - Catalog data is **not in the database** — `CatalogService` reads `src/main/resources/data/messier.json` from the classpath and serves it via `GET /catalog/messier`.
 - Global error handling in `ControllerExceptionHandler` (`@ControllerAdvice`).
 - Passwords hashed with BCrypt.
+- **Schema is managed by Flyway**, not Hibernate: `ddl-auto=none` and migrations live in `src/main/resources/db/migration` (`V<n>__*.sql`), applied to the `skyquest` schema on startup. Add a new versioned migration for schema changes rather than relying on JPA auto-DDL.
+- **API docs**: springdoc-openapi (`OpenApiConfig`) serves Swagger UI at `/swagger-ui.html` and the spec at `/v3/api-docs`.
 
 ### Backend endpoints
 - `POST /user` — login (returns user + sets `jwt` cookie)
 - `POST /user/logout` — clears the `jwt` cookie
 - `GET /user/me` — current user from the `jwt` cookie (401 if missing/invalid)
 - `GET /catalog/messier` — Messier catalog (auth required)
+- `GET /swagger-ui.html`, `GET /v3/api-docs` — API docs (public)
 
 ## Configuration notes
-- Backend config in `back-sky-quest/src/main/resources/application.properties`: PostgreSQL datasource, `ddl-auto=update`, and the JWT secret/expiration. DB schema is `skyquest`.
+- Backend config in `back-sky-quest/src/main/resources/application.properties`: PostgreSQL datasource, Flyway, and the JWT secret/expiration. DB schema is `skyquest`. The datasource is driven by env vars with local defaults: `DB_HOST` (localhost), `DB_PORT` (5432), `DB_NAME` (kivexel), `DB_USER` (admin), `DB_PASS` (admin).
 - Frontend env files (`.env.local`, `.env.dev`, `.env.production`) define `NEXT_PUBLIC_BACKEND_URL` (Spring) and `NEXT_PUBLIC_CLIENT_URL` (Next.js). Keep these two roles distinct — they feed the two different Axios instances.
 
 ## Conventions
