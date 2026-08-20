@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 SkyQuest is a full-stack web app for astronomers to track celestial objects (Messier catalog) and log observations. It is a Maven multi-module monorepo with two modules declared in the root `pom.xml`:
 
 - **`back-sky-quest/`** — Spring Boot 3.4 / Java 21 REST API (`com.palazzisoft.skyquest`)
-- **`front-sky-quest/`** — Next.js 15 (App Router) + TypeScript + React 18 frontend
+- **`front-sky-quest/`** — Next.js 16 (App Router) + TypeScript + React 19 frontend (Node 20.9+; `.nvmrc` pins 24.19.0)
 
 The root `pom.xml` also builds `front-sky-quest` as a Maven module, but day-to-day frontend work uses npm directly (see below).
 
@@ -25,10 +25,10 @@ Requires a running PostgreSQL (see docker-compose). The Maven wrapper (`mvnw`) l
 
 ### Frontend (`front-sky-quest/`)
 ```bash
-npm run dev            # dev server on :3000 (Turbopack)
-npm run build          # production build
-npm run lint           # ESLint (next lint)
-npm run fix            # eslint --fix on src/
+npm run dev            # dev server on :3000 (Turbopack is the default in Next 16)
+npm run build          # production build (Turbopack)
+npm run lint           # eslint src/  (`next lint` was removed in Next 16)
+npm run fix            # eslint src/ --fix
 npm run format         # prettier --write
 npm run format:check   # prettier --check
 ```
@@ -48,7 +48,7 @@ JWT stored in an **HTTP-only cookie named `jwt`**. Full details in `documentatio
 2. Authenticated requests: Spring's `JwtAuthenticationFilter` reads the `jwt` cookie (not an `Authorization` header) and populates the `SecurityContext`. In `SecurityConfig`, `/user/**`, `/actuator/**`, and the Swagger paths (`/v3/api-docs/**`, `/swagger-ui/**`, `/swagger-ui.html`) are public; everything else requires auth.
 3. Session hydration on refresh: `AuthHydrator` (mounted in `layout.tsx`) calls `useAuth().init()` → Next.js `/api/me` → Spring `GET /user/me`, restoring the Zustand store. Guarded by `isHydrated`/`isHydrating` flags in `src/store/useAuth.ts`.
 
-Because Next.js middleware cannot inject cookies into outgoing requests, cookie forwarding is done manually in route handlers / the `api.ts` interceptor.
+Because the Next.js proxy (formerly middleware) cannot inject cookies into outgoing requests, cookie forwarding is done manually in route handlers / the `api.ts` interceptor.
 
 ### Frontend structure
 - **Two Axios instances, do not mix them:**
@@ -56,7 +56,7 @@ Because Next.js middleware cannot inject cookies into outgoing requests, cookie 
   - `src/service/api.ts` — server-side (route handlers, Server Components); `baseURL = NEXT_PUBLIC_BACKEND_URL` (Spring). Its request interceptor reads the `jwt` cookie via `next/headers` and forwards it. Importing this in client code will break the build.
 - `src/app/api/*/route.ts` are the **BFF proxy layer** between the browser and Spring — every backend call should go through here (or a Server Component using `api.ts`).
 - State: **Zustand** (`src/store/useAuth.ts`). UI: **shadcn/ui** (New York style) in `src/components/ui/`, configured via `components.json`. Tailwind CSS.
-- Route protection: `src/middleware.ts` guards `/dashboard/*` and `/service/*`, redirecting to `/login` when the `jwt` cookie is absent.
+- Route protection: `src/proxy.ts` guards `/dashboard/*` and `/service/*`, redirecting to `/login` when the `jwt` cookie is absent. (Next 16 renamed the `middleware` convention to `proxy`; it always runs on the Node.js runtime.)
 - Path aliases (`tsconfig.json`): `@/*` → `src/*`, `@modules/*` → `src/modules/*`.
 - Feature UI lives in `src/modules/`; reusable pieces in `src/components/`; server actions in `src/action/`.
 

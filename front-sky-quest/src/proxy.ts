@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 const publicRoutes = ['/login', '/register', '/'];
 
 // This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const token = request.cookies.get('jwt')?.value;
 
   const path = request.nextUrl.pathname;
@@ -23,7 +23,7 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Specify which paths this middleware should run on
+// Specify which paths this proxy should run on
 export const config = {
   matcher: ['/service/:path*', '/dashboard/:path*'],
 };

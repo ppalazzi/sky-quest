@@ -22,8 +22,8 @@
                 <version>1.11.3</version>
 
                 <configuration>
-                    <nodeVersion>v18.19.0</nodeVersion>
-                    <npmVersion>9.9.0</npmVersion>
+                    <nodeVersion>v24.19.0</nodeVersion>
+                    <npmVersion>11.17.0</npmVersion>
                     <installDirectory>${project.basedir}/node</installDirectory>
                 </configuration>
 
